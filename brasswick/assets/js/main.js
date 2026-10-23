@@ -438,6 +438,9 @@
   const CART_KEY = 'bw-cart-v2', WISH_KEY = 'bw-wish', FREE_SHIP = 150;
   let cart = store.get(CART_KEY, []);
   if (!Array.isArray(cart)) cart = [];
+  // memberships are subscriptions, never cart items — drop any saved by older versions
+  cart = cart.filter(i => i && !String(i.id || '').startsWith('club-'));
+  store.set(CART_KEY, cart);
   const saveCart = () => { store.set(CART_KEY, cart); renderCart(); };
   const cartQty = () => cart.reduce((s, i) => s + i.qty, 0);
   const cartSubtotal = () => cart.reduce((s, i) => s + i.qty * i.price, 0);
@@ -533,7 +536,6 @@
     let price = parseFloat(b.dataset.price), meta = b.dataset.meta || '', name = b.dataset.name;
     const optGroup = b.dataset.optionFrom && $(b.dataset.optionFrom);
     if (optGroup) { const sel = $('.is-active', optGroup); if (sel) { price = parseFloat(sel.dataset.price); meta = (meta ? meta + ' · ' : '') + sel.textContent.trim(); } }
-    if (b.hasAttribute('data-plan')) { price = parseFloat(billingMode === 'yearly' ? b.dataset.priceYearly : b.dataset.priceMonthly); meta = billingMode === 'yearly' ? 'Yearly plan' : 'Monthly plan'; }
     const qtyInput = b.dataset.qtyFrom && $(b.dataset.qtyFrom);
     const qty = qtyInput ? Math.max(1, parseInt(qtyInput.value, 10) || 1) : 1;
     addToCart({ key: b.dataset.id + '|' + meta, id: b.dataset.id, name, price, img: b.dataset.img || '', meta }, qty);
@@ -720,6 +722,12 @@
     });
     f.addEventListener('keypress', e => { if (e.key.length === 1 && !/[0-9+]/.test(e.key)) e.preventDefault(); });
   });
+  // names: letters (any alphabet), spaces, apostrophes, hyphens and dots only — no numbers or symbols
+  const ALPHA_BAD = /[^\p{L}\p{M}\s'.\-]/gu;
+  $$('[data-alpha]').forEach(f => {
+    f.addEventListener('input', () => { const c = f.value.replace(ALPHA_BAD, '').replace(/\s{2,}/g, ' '); if (c !== f.value) f.value = c; });
+    f.addEventListener('beforeinput', e => { if (e.inputType === 'insertText' && e.data && e.data.length === 1 && /[^\p{L}\p{M}\s'.\-]/u.test(e.data)) { e.preventDefault(); toast('Only letters are allowed in this field', 'error'); } });
+  });
   $$('[data-digits]').forEach(f => f.addEventListener('input', () => { const c = f.value.replace(/\D/g, ''); if (c !== f.value) f.value = c; }));
   $$('[data-card-number]').forEach(f => f.addEventListener('input', () => { f.value = f.value.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 '); }));
   $$('[data-expiry]').forEach(f => f.addEventListener('input', () => { let d = f.value.replace(/\D/g, '').slice(0, 4); if (d.length >= 3) d = d.slice(0, 2) + '/' + d.slice(2); f.value = d; }));
@@ -736,6 +744,7 @@
       const m = v.match(/^(\d{2})\/(\d{2})$/); if (!m || +m[1] < 1 || +m[1] > 12) return 'Use the format MM/YY.';
       const exp = new Date(2000 + +m[2], +m[1], 0, 23, 59); if (exp < new Date()) return 'This card has expired.';
     }
+    if (f.hasAttribute('data-alpha')) { if (/[^\p{L}\p{M}\s'.\-]/u.test(v)) return 'Letters only — numbers and symbols are not allowed.'; if (f.required && v.replace(/[^\p{L}]/gu, '').length < 2) return 'Enter at least 2 letters.'; }
     if (f.dataset.min && v.length < +f.dataset.min) return `Enter at least ${f.dataset.min} digits.`;
     if (f.pattern && !new RegExp('^(?:' + f.pattern + ')$').test(v)) return 'Please match the requested format.';
     return '';
@@ -785,6 +794,32 @@
       $$('[data-period]').forEach(p => p.textContent = yearly ? '/year' : '/month');
     }));
   });
+  const jm = $('#join-modal');
+  if (jm) {
+    const jf = $('[data-join-form]', jm); let opener = null, plan = null;
+    const step = s => $$('[data-join-step]', jm).forEach(x => x.classList.toggle('hidden', x.dataset.joinStep !== s));
+    const close = () => { jm.close(); };
+    jm.addEventListener('close', () => { if (opener) opener.focus({ preventScroll: true }); });
+    $$('[data-join]').forEach(b => b.addEventListener('click', () => {
+      opener = b; plan = b.dataset.planName;
+      const yearly = billingMode === 'yearly';
+      $$('[data-join-plan]', jm).forEach(x => x.textContent = plan);
+      $('[data-join-price]', jm).textContent = '$' + (yearly ? b.dataset.priceYearly : b.dataset.priceMonthly);
+      $('[data-join-period]', jm).textContent = yearly ? 'per year' : 'per month';
+      jf.reset(); $$('input', jf).forEach(clearError); step('form');
+      jm.showModal(); $('#j-name', jm).focus();
+    }));
+    $$('[data-join-close]', jm).forEach(b => b.addEventListener('click', close));
+    jm.addEventListener('click', e => { if (e.target === jm) close(); });
+    jf.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!validateForm(jf)) { toast('Please check the highlighted fields', 'error'); return; }
+      $('[data-join-who]', jm).textContent = $('#j-name', jm).value.trim().split(/\s+/)[0];
+      $('[data-join-email]', jm).textContent = $('#j-email', jm).value.trim();
+      step('done'); $('[data-join-step="done"]', jm).focus();
+      toast(plan + ' membership confirmed');
+    });
+  }
   const est = $('[data-estimator]');
   if (est) {
     const out = $('[data-estimate]'), weeks = $('[data-weeks]'), areas = $$('[data-area-out]');

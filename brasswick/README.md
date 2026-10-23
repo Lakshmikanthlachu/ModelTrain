@@ -15,7 +15,7 @@ Tailwind CSS (CDN) · Vanilla JavaScript · No build step · Light / Dark · LTR
 | `products.html` | Products by scale — scale chips, category filter, search, sort, grid/list toggle, empty state, pagination |
 | `product-details.html` | Product details — gallery with hover zoom, options, quantity, tabs (description / specs / reviews), bundle pricing table, FAQs, related |
 | `custom-layouts.html` | Custom Layout Building — layout types, live budget estimator, animated process, enquiry form |
-| `pricing.html` | Pricing — monthly/yearly club plans, comparison table, build packages, FAQ |
+| `pricing.html` | Pricing — monthly/yearly club plans with a *Join* membership form (memberships never go in the cart), comparison table, build packages, FAQ |
 | `blog.html` | Blog — featured post, category filter + search, grid, pagination, newsletter |
 | `blog-details.html` | Blog details — article, sticky sidebar (search, categories, recent, tags, lead magnet), author box, comments |
 | `contact.html` | Contact — contact cards, enquiry form, OpenStreetMap embed, opening hours, FAQ |
@@ -85,6 +85,8 @@ assets/
 | `data-add-cart`, `data-cart-open` | Cart drawer |
 | `data-wish` (+ `data-name`, `data-price`, `data-img`, `data-meta`), `data-wish-open`, `data-wish-all`, `data-wish-clear` | Wishlist hearts, panel and page |
 | `data-phone`, `data-digits` | Numeric-only inputs with validation |
+| `data-alpha` | Name fields: letters, spaces, `'` `-` `.` only (numbers and symbols are blocked), minimum 2 letters |
+| `data-join` (+ `data-plan-name`, `data-price-monthly`, `data-price-yearly`) | Opens the membership sign-up dialog |
 | `data-tabs`, `data-gallery`, `data-qty`, `data-options` | Product detail widgets |
 | `data-billing` | Monthly / yearly price switch |
 | `data-estimator` | Layout budget estimator |
@@ -107,6 +109,8 @@ The template uses the Tailwind Play CDN for zero-setup editing. For production, 
 Photos: Unsplash · Icons: Lucide (ISC) · Fonts: Google Fonts (OFL)
 
 ## Changelog
+
+**v1.3** — Client review fixes: footer application-name wordmark removed; heading glyphs (italic *Grand*, the letter f, descenders) no longer clipped by the reveal animation on any page; Shop is a direct nav link; every product has its own photo and no photo repeats between sections of a page; shop promise cards equal and centred; About timeline aligned (vertical on phones, 2–3 columns on tablets, 6 on desktop, no sideways scroll); customer photos on testimonials, blog comments and product reviews; club plans open a membership form instead of adding to the cart (old membership items are removed from saved carts); name on card and all other name fields accept letters only.
 
 **v1.2** — Wishlist you can view: header heart with count, slide-over wishlist panel and new `wishlist.html` (move to cart, add all, share, clear). Light/dark toggle moves into the mobile menu on phones so the header always fits. Stats no longer clip on 320px phones. Reduced-motion users no longer see panels open blank.
 
