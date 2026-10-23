@@ -46,6 +46,7 @@ Tailwind CSS (CDN) · Vanilla JavaScript · No build step · Light / Dark · LTR
 
 ```
 assets/
+  fonts/                   Newsreader f/j subset (+ OFL licence)
   css/style.css            Design tokens, components, animations, RTL & reduced-motion rules
   js/tailwind-config.js    Tailwind theme (colours mapped to CSS variables, fonts)
   js/main.js               All interactions (vanilla JS, each module guarded)
@@ -58,6 +59,7 @@ assets/
 **Colours** — edit the RGB channel variables at the top of `assets/css/style.css` (`:root` for light, `.dark` for dark). Tailwind classes such as `bg-forest`, `text-brass`, `border-line/10` pick them up automatically.
 
 **Fonts** — Fraunces (display), Manrope (body), JetBrains Mono (labels), Noto Kufi Arabic (RTL). Change the Google Fonts link in each `<head>` and the `fontFamily` block in `tailwind-config.js`.
+The letters **f** and **j** in headings come from a tiny local subset of Newsreader (`assets/fonts/newsreader-fj-*.woff2`, OFL licence included), applied with `unicode-range` through the `"Brasswick FJ"` font face in `style.css`; Fraunces' own f and j have large curled hooks. To use Fraunces' originals, remove `"Brasswick FJ"` from the display stack.
 
 **Theme & direction** — the moon/sun button toggles dark mode; the double-arrow button toggles LTR / RTL. Both are remembered in `localStorage` (`bw-theme`, `bw-dir`) and applied before first paint by a small inline script in `<head>`. Layouts use logical utilities (`ms-`, `pe-`, `start-`, `end-`) so they mirror correctly.
 
@@ -109,6 +111,8 @@ The template uses the Tailwind Play CDN for zero-setup editing. For production, 
 Photos: Unsplash · Icons: Lucide (ISC) · Fonts: Google Fonts (OFL)
 
 ## Changelog
+
+**v1.3.1** — Cleaner **f** and **j** in every heading on all pages (e.g. *journeys* in the Home hero); Fraunces italics use conventional letterforms (WONK axis off).
 
 **v1.3** — Client review fixes: footer application-name wordmark removed; heading glyphs (italic *Grand*, the letter f, descenders) no longer clipped by the reveal animation on any page; Shop is a direct nav link; every product has its own photo and no photo repeats between sections of a page; shop promise cards equal and centred; About timeline aligned (vertical on phones, 2–3 columns on tablets, 6 on desktop, no sideways scroll); customer photos on testimonials, blog comments and product reviews; club plans open a membership form instead of adding to the cart (old membership items are removed from saved carts); name on card and all other name fields accept letters only.
 

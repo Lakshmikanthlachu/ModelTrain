@@ -20,7 +20,7 @@ tailwind.config = {
         night:   '#0C110E'
       },
       fontFamily: {
-        display: ['Fraunces', 'Georgia', 'serif'],
+        display: ['"Brasswick FJ"', 'Fraunces', 'Georgia', 'serif'],
         sans: ['Manrope', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
       },
