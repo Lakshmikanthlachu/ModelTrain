@@ -44,8 +44,26 @@
   /* 02 ------------------------------------------------- preloader & theme */
   const pre = $('.preloader');
   const donePre = () => pre && pre.classList.add('is-done');
-  window.addEventListener('load', () => setTimeout(donePre, 350));
+  if (pre && pre.classList.contains('pl-quick')) requestAnimationFrame(() => setTimeout(donePre, 60));
+  else window.addEventListener('load', () => setTimeout(donePre, 350));
   setTimeout(donePre, 2600);
+  // page transitions: show the branded loading screen, then open the next page
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (pre && !reduceMotion) {
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href]');
+      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (a.target && a.target !== '_self' || a.hasAttribute('download')) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || !/\.html?$|\/$/.test(url.pathname)) return;
+      if (url.pathname === location.pathname && (url.hash || url.search === location.search)) return; // same-page anchors
+      e.preventDefault();
+      pre.classList.remove('is-done'); pre.classList.add('is-leaving');
+      setTimeout(() => { location.href = url.href; }, 340);
+    });
+    // coming back with the browser's Back button (page restored from cache): hide the screen again
+    window.addEventListener('pageshow', ev => { if (ev.persisted) { pre.classList.remove('is-leaving'); pre.classList.add('is-done'); } });
+  }
 
   $$('[data-theme-toggle]').forEach(btn => btn.addEventListener('click', () => {
     const dark = root.classList.toggle('dark');

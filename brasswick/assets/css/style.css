@@ -365,9 +365,17 @@ details.acc .acc-body { animation: accIn .45s cubic-bezier(.2,.8,.2,1); }
 /* preloader */
 .preloader { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background: rgb(var(--paper)); transition: opacity .6s, visibility .6s; }
 .preloader.is-done { opacity: 0; visibility: hidden; }
-.preloader .pl-track { width: 220px; height: 3px; background: rgb(var(--line) / .15); border-radius: 3px; position: relative; overflow: visible; }
-.preloader .pl-train { position: absolute; bottom: 4px; left: 0; width: 46px; animation: plrun 1.4s cubic-bezier(.6,0,.4,1) infinite; color: rgb(var(--brass)); }
-@keyframes plrun { from { transform: translateX(-10px); } to { transform: translateX(184px); } }
+/* the same brand lockup as the header, a little larger, with a turning wheel and a progress rail */
+.preloader .pl-logo { transform: scale(1.45); }
+.preloader .pl-logo .logo-badge svg { animation: plwheel 1.6s linear infinite; }
+.preloader .pl-bar { width: 180px; height: 3px; border-radius: 3px; background: rgb(var(--line) / .15); overflow: hidden; }
+.preloader .pl-bar span { display: block; width: 40%; height: 100%; border-radius: inherit; background: rgb(var(--brass)); animation: plbar 1.2s cubic-bezier(.6,0,.4,1) infinite; }
+@keyframes plwheel { to { transform: rotate(360deg); } }
+@keyframes plbar { from { transform: translateX(-110%); } to { transform: translateX(260%); } }
+[dir="rtl"] .preloader .pl-bar span { animation-direction: reverse; }
+/* page transition: the loading screen fades back in (with the same logo) before the next page opens */
+.preloader.is-leaving { opacity: 1; visibility: visible; transition: opacity .32s ease, visibility 0s; }
+@media (prefers-reduced-motion: reduce) { .preloader .pl-logo .logo-badge svg, .preloader .pl-bar span { animation: none; } }
 
 .back-top { opacity: 0; transform: translateY(20px); pointer-events: none; transition: all .4s; }
 .back-top.is-show { opacity: 1; transform: none; pointer-events: auto; }

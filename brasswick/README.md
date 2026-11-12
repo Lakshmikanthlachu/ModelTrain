@@ -81,6 +81,7 @@ The letters **f** and **j** in headings come from a tiny local subset of Newsrea
 | `data-scrub` | Text that lights up word-by-word as you scroll |
 | `data-draw` | SVG path that draws itself on scroll |
 | `data-flap='["…"]'` | Split-flap departure board |
+| `.preloader` (`.pl-quick` on inner pages) | Branded loading screen; also shown as the page-transition screen when an internal link is clicked |
 | `data-count` | Animated counter |
 | `data-tilt`, `data-magnetic` | 3D tilt / magnetic hover |
 | `data-filter-scope`, `data-filter`, `data-search`, `data-category`, `data-sort`, `data-view`, `data-per-page`, `data-pagination` | Product & blog filtering, search and pagination |
@@ -111,6 +112,8 @@ The template uses the Tailwind Play CDN for zero-setup editing. For production, 
 Photos: Unsplash · Icons: Lucide (ISC) · Fonts: Google Fonts (OFL)
 
 ## Changelog
+
+**v1.4** — One brand logo everywhere: the loading screen and a new branded page-transition screen use exactly the same wheel-badge + wordmark lockup as the header and footer (inner pages fade it out as soon as they're ready; skipped for reduced-motion users and same-page anchors). Call-to-action bands keep their two buttons side by side on one line (stacked full-width only on phones under 480px). Custom Layouts → Process: a photo above each step's icon, with a dashed connector between the icons on desktop.
 
 **v1.3.1** — Cleaner **f** and **j** in every heading on all pages (e.g. *journeys* in the Home hero); Fraunces italics use conventional letterforms (WONK axis off).
 
